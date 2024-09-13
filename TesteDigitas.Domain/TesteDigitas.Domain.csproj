@@ -1,0 +1,78 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net6.0</TargetFramework>
+    <!-- To Allow the .NET Coverage Tools we set DebugType to Full-->
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Accounts\**" />
+    <Compile Remove="Agendamentos\**" />
+    <Compile Remove="Clientes\**" />
+    <Compile Remove="Combos\**" />
+    <Compile Remove="Customers\**" />
+    <Compile Remove="Email\**" />
+    <Compile Remove="Fipes\**" />
+    <Compile Remove="Frotistas\**" />
+    <Compile Remove="Historicos\**" />
+    <Compile Remove="Itens\**" />
+    <Compile Remove="Mapa\**" />
+    <Compile Remove="Montadoras\**" />
+    <Compile Remove="Motoristas\**" />
+    <Compile Remove="Orcamentos\**" />
+    <Compile Remove="OrdensServicos\**" />
+    <Compile Remove="Prestadores\**" />
+    <Compile Remove="Solicitacoes\**" />
+    <Compile Remove="Tokens\**" />
+    <Compile Remove="Veiculos\**" />
+    <EmbeddedResource Remove="Accounts\**" />
+    <EmbeddedResource Remove="Agendamentos\**" />
+    <EmbeddedResource Remove="Clientes\**" />
+    <EmbeddedResource Remove="Combos\**" />
+    <EmbeddedResource Remove="Customers\**" />
+    <EmbeddedResource Remove="Email\**" />
+    <EmbeddedResource Remove="Fipes\**" />
+    <EmbeddedResource Remove="Frotistas\**" />
+    <EmbeddedResource Remove="Historicos\**" />
+    <EmbeddedResource Remove="Itens\**" />
+    <EmbeddedResource Remove="Mapa\**" />
+    <EmbeddedResource Remove="Montadoras\**" />
+    <EmbeddedResource Remove="Motoristas\**" />
+    <EmbeddedResource Remove="Orcamentos\**" />
+    <EmbeddedResource Remove="OrdensServicos\**" />
+    <EmbeddedResource Remove="Prestadores\**" />
+    <EmbeddedResource Remove="Solicitacoes\**" />
+    <EmbeddedResource Remove="Tokens\**" />
+    <EmbeddedResource Remove="Veiculos\**" />
+    <None Remove="Accounts\**" />
+    <None Remove="Agendamentos\**" />
+    <None Remove="Clientes\**" />
+    <None Remove="Combos\**" />
+    <None Remove="Customers\**" />
+    <None Remove="Email\**" />
+    <None Remove="Fipes\**" />
+    <None Remove="Frotistas\**" />
+    <None Remove="Historicos\**" />
+    <None Remove="Itens\**" />
+    <None Remove="Mapa\**" />
+    <None Remove="Montadoras\**" />
+    <None Remove="Motoristas\**" />
+    <None Remove="Orcamentos\**" />
+    <None Remove="OrdensServicos\**" />
+    <None Remove="Prestadores\**" />
+    <None Remove="Solicitacoes\**" />
+    <None Remove="Tokens\**" />
+    <None Remove="Veiculos\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ServiceModel.Http" Version="4.4.4" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,72 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+ 
+  <PropertyGroup>
+	  <TargetFramework>net6.0</TargetFramework>
+    <!-- To Allow the .NET Coverage Tools we set DebugType to Full-->
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+	
+	  <Compile Remove="EntityFrameworkDataAccess\Entities\Account.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\Agendamento.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\Cliente.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\ClienteMotorista.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\Combo.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\ComboFipe.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\ComboFrotista.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\ComboHistorico.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\ComboItem.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\ComboPrestador.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\ComboPrestadorFrotista.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\ComboPrestadorItem.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\ComboPrestadorValor.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\ComboPrestadorVeiculo.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\ComboVeiculo.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\Customer.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\Fipe.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\FipeMontadora.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\FipeVeiculo.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\Frotista.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\FrotistaCliente.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\FrotistaMotoristaToken.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\Historico.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\Item.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\LinhaCredito.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\Montadora.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\Motorista.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\Orcamento.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\OrcamentoItem.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\OrdemServico.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\OrdemServicoItem.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\Prestador.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\SolicitacaoManutencao.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\Token.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\UsuarioFrotista.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\UsuarioMotorista.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\UsuarioPrestador.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\Veiculo.cs" />
+    <Compile Remove="EntityFrameworkDataAccess\Entities\VeiculoMotorista.cs" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+	  <PackageReference Include="Autofac" Version="4.6.0" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\TesteDigitas.Domain\TesteDigitas.Domain.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="EntityFrameworkDataAccess\DTO\" />
+    <Folder Include="EntityFrameworkDataAccess\Entities\" />
+    <Folder Include="EntityFrameworkDataAccess\Interfaces\" />
+  </ItemGroup>
+
+</Project>

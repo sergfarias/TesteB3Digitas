@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net6.0</TargetFramework>
+    
+    <!-- To Allow the .NET Coverage Tools we set DebugType to Full-->
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="DTO\**" />
+    <Compile Remove="Interfaces\**" />
+    <EmbeddedResource Remove="DTO\**" />
+    <EmbeddedResource Remove="Interfaces\**" />
+    <None Remove="DTO\**" />
+    <None Remove="Interfaces\**" />
+  </ItemGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.23" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.4" />
+		<PackageReference Include="MongoDB.Driver" Version="2.28.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+	</ItemGroup>	
+	
+  <ItemGroup>
+    <ProjectReference Include="..\TesteDigitas.Domain\TesteDigitas.Domain.csproj" />
+    <ProjectReference Include="..\TesteDigitas.Infrastructure\TesteDigitas.Infrastructure.csproj" />
+  </ItemGroup>	
+	
+  <ItemGroup>
+    <Folder Include="Services\Data\" />
+  </ItemGroup>
+
+</Project>
