@@ -6,7 +6,7 @@ namespace TesteDigitas.Application.Services.MongoDb
     public interface IMongoDbService
     {
         Task<IMongoCollection<ReturnOrderBookViewModel>> ConnectMongoDbOrdersAsync();
-        IMongoCollection<ReturnOrderBookViewModel> ConnectMongoDbOrders();
+        //IMongoCollection<ReturnOrderBookViewModel> ConnectMongoDbOrders();
         Task<IMongoCollection<ReturnSimulationViewModel>> ConnectMongoDbCalculaMemoryAsync();
     }
 }

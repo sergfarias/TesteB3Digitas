@@ -79,6 +79,7 @@ namespace XUnit.Coverlet
             var service = new PriceService(mongoDb);
             var teste = await service.SearchSimulations();
             Assert.False(teste.Count == 0);
+            Assert.False(teste == null);
         }
 
         [Fact]

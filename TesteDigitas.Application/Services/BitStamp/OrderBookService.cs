@@ -29,7 +29,7 @@ namespace TesteDigitas.Application.Services.BitStamp
           {
             try
             {
-                string jsonString = await RetornSocket(Moeda);
+                string jsonString = await ReturnSocketSBitstamp(Moeda);
                 if (string.IsNullOrEmpty(jsonString))
                 {
                     return new Response

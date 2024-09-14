@@ -27,13 +27,13 @@ namespace TesteDigitas.Application.Services.MongoDb
             return collection;
         }
 
-        public IMongoCollection<ReturnOrderBookViewModel> ConnectMongoDbOrders()
-        {   
-            var client = new MongoClient(_connectionString);
-            var database = client.GetDatabase("sample_order");
-            var collection = database.GetCollection<ReturnOrderBookViewModel>("orders");
-            return collection;
-        }
+        //public IMongoCollection<ReturnOrderBookViewModel> ConnectMongoDbOrders()
+        //{   
+        //    var client = new MongoClient(_connectionString);
+        //    var database = client.GetDatabase("sample_order");
+        //    var collection = database.GetCollection<ReturnOrderBookViewModel>("orders");
+        //    return collection;
+        //}
 
     }
 }

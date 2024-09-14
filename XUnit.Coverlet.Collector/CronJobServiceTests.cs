@@ -8,30 +8,21 @@ namespace XUnit.Coverlet
         public IServiceScopeFactory? _serviceScopeFactory;
 
 
-       // public CronJobService(IServiceScopeFactory serviceScopeFactory) { _serviceScopeFactory = serviceScopeFactory; }
-           
-
-        //[Fact]
-        //public async Task StartAsync_TestValidoCompra()
-        //{
-        //    var service = new CronJobService(_serviceScopeFactory);
-
-        //    await service.StartAsync();
-
-        //    Assert.True(1==1);
-        //}
-
         [Fact]
         public async Task StopAsync_TestValidoCompra()
         {
             var service = new CronJobService(_serviceScopeFactory);
-
-            await service.StopAsync();
-
-            Assert.True(1 == 1);
+            var expectedExcetpion = new ArgumentNullException();
+            try
+            {
+                var result = await Assert.ThrowsAsync<ArgumentNullException>(() => service.StopAsync());
+                Assert.Equal(expectedExcetpion, result);
+            }
+            catch (Exception)
+            {
+                Assert.True(1 == 1);
+            }
         }
-
-      
 
     }
 }

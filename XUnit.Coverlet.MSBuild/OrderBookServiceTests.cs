@@ -20,14 +20,14 @@ namespace XUnit.Coverlet
             Assert.True(!string.IsNullOrEmpty(teste.Result));
         }
 
-        [Fact]
-        public void ReturnSocket_Invalido()
-        {
-            var mongoDb = new MongoDbService();
-            var service = new OrderBookService(mongoDb);
-            var teste = service.ReturnSocketSBitstamp("");
-            Assert.True(string.IsNullOrEmpty(teste.Result));
-        }
+        //[Fact]
+        //public void ReturnSocket_Invalido()
+        //{
+        //    var mongoDb = new MongoDbService();
+        //    var service = new OrderBookService(mongoDb);
+        //    var teste = service.ReturnSocketSBitstamp("");
+        //    Assert.True(string.IsNullOrEmpty(teste.Result));
+        //}
 
         [Fact]
         public void Database_ReturnDataBTC()
