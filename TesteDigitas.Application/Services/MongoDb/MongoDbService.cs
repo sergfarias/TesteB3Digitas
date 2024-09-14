@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using System.Threading.Tasks;
-using TesteDigitas.Application.Settings;
 using TesteDigitas.Application.ViewModel;
 namespace TesteDigitas.Application.Services.MongoDb
 {
@@ -16,7 +14,7 @@ namespace TesteDigitas.Application.Services.MongoDb
         public async Task<IMongoCollection<ReturnSimulationViewModel>> ConnectMongoDbCalculaMemoryAsync()
         {
             var client = new MongoClient(_connectionString);
-            var database = client.GetDatabase("sample_order");
+            var database =  client.GetDatabase("sample_order");
             var collection = database.GetCollection<ReturnSimulationViewModel>("calculate");
             return collection;
         }

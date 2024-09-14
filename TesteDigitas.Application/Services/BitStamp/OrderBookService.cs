@@ -24,36 +24,20 @@ namespace TesteDigitas.Application.Services.BitStamp
         }
 
         #region Buscar e gravar Mongdb
+
           public async Task<Response> ReturnData(string Moeda)
           {
             try
             {
-                //********************************transformar este bloco em um mtodo
-                var buffer = new byte[1024 * 4];
-                string query = "{\"event\": \"bts:subscribe\",\"data\":{\"channel\": \"order_book_" + Moeda + "\"}"+"}";
-
-                using var ws = new ClientWebSocket();
-                await ws.ConnectAsync(new Uri("wss://ws.bitstamp.net"), CancellationToken.None);
-                var encoded = Encoding.UTF8.GetBytes(query);
-                var buffer2 = new ArraySegment<Byte>(encoded, 0, encoded.Length);
-                await ws.SendAsync(buffer2, WebSocketMessageType.Text, true, CancellationToken.None);
-
-                string jsonString="";
-                int i = 0;
-                while (i<=2)
+                string jsonString = await RetornSocket(Moeda);
+                if (string.IsNullOrEmpty(jsonString))
                 {
-                    i++;
-                    var result = await ws.ReceiveAsync(buffer, CancellationToken.None);
-                    if (result.MessageType == WebSocketMessageType.Close)
-                        await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, null, CancellationToken.None);
-                    else{
-                        if (i > 1)
-                        {
-                            jsonString += Encoding.ASCII.GetString(buffer, 0, result.Count);
-                        }
-                    }
+                    return new Response
+                    {
+                         Message = "Nenhum dado retornado!",
+                         StatusCode = "400"
+                    };
                 }
-                //*********************************************************
 
                 var Id = await InsertData(JsonSerializer.Deserialize<ReturnOrderBookViewModel>(jsonString));
 
@@ -69,9 +53,7 @@ namespace TesteDigitas.Application.Services.BitStamp
                     response.Message = "Falha na inclusão!";
                     response.StatusCode = "400";
                 }
-
                 return response;
-
             }
             catch (Exception ex)
             {
@@ -81,6 +63,43 @@ namespace TesteDigitas.Application.Services.BitStamp
                     StatusCode = "400"
                 };
                 return response;
+            }
+        }
+
+        public async Task<string> ReturnSocketSBitstamp(string Moeda)
+        {
+            try
+            {
+                var buffer = new byte[1024 * 4];
+                string query = "{\"event\": \"bts:subscribe\",\"data\":{\"channel\": \"order_book_" + Moeda + "\"}" + "}";
+
+                using var ws = new ClientWebSocket();
+                await ws.ConnectAsync(new Uri("wss://ws.bitstamp.net"), CancellationToken.None);
+                var encoded = Encoding.UTF8.GetBytes(query);
+                var buffer2 = new ArraySegment<Byte>(encoded, 0, encoded.Length);
+                await ws.SendAsync(buffer2, WebSocketMessageType.Text, true, CancellationToken.None);
+
+                string jsonString = "";
+                int i = 0;
+                while (i <= 2)
+                {
+                    i++;
+                    var result = await ws.ReceiveAsync(buffer, CancellationToken.None);
+                    if (result.MessageType == WebSocketMessageType.Close)
+                        await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, null, CancellationToken.None);
+                    else
+                    {
+                        if (i > 1)
+                        {
+                            jsonString += Encoding.ASCII.GetString(buffer, 0, result.Count);
+                        }
+                    }
+                }
+                return jsonString;
+            }
+            catch (Exception)
+            {
+                return "";
             }
         }
 
@@ -99,88 +118,91 @@ namespace TesteDigitas.Application.Services.BitStamp
         {
             try 
             {
-                var lstData = DataBase();
-                if (lstData == null)
-                    return null;
-                
-                //Maior preço
-                var lstMaxPrice = MaxPrice(lstData, Operacao);
-                var lstResponse = new List<FindOrderBookViewModel>();
-                lstResponse.AddRange(lstMaxPrice);
-
-                //Menor preço
-                var lstMinusPrice = MinorPrice(lstData, Operacao);
-                foreach (var item in lstResponse)
+                var lstData = await DataBase();
+                if (lstData != null)
                 {
-                    foreach(var item2 in lstMinusPrice)
-                    {
-                        if (item.Channel == item2.Channel) 
-                            item.MinorPreci = item2.MinorPreci;
-                    }
-                }
 
-                //média preço
-                var lstMediaPrice = AvgPrice(lstData, Operacao);
-                foreach (var item in lstResponse)
-                {
-                    foreach (var item2 in lstMediaPrice)
-                    {
-                        if (item.Channel == item2.Channel)
-                            item.AveragePreci = item2.AveragePreci;
-                    }
-                }
+                    //Maior preço
+                    var lstMaxPrice = MaxPrice(lstData, Operacao);
+                    var lstResponse = new List<FindOrderBookViewModel>();
+                    lstResponse.AddRange(lstMaxPrice);
 
-                ////média preço nos ultimos 5 segundos
-                var lstMediaUlt5Segundos = AvgPriceLastFiveSeconds(Operacao);
-                if (lstMediaUlt5Segundos != null)
-                {
+                    //Menor preço
+                    var lstMinusPrice = MinorPrice(lstData, Operacao);
                     foreach (var item in lstResponse)
                     {
-                        foreach (var item2 in lstMediaUlt5Segundos)
+                        foreach (var item2 in lstMinusPrice)
                         {
                             if (item.Channel == item2.Channel)
-                                item.AveragePreciFiveSeconds = item2.AveragePreciFiveSeconds;
+                                item.MinorPreci = item2.MinorPreci;
                         }
                     }
-                }
 
-                //o Média de quantidade acumulada de cada ativo 
-                var lstMediaAcumulada = AvgQuantityAccumulated("order_book_btcusd", Operacao);
-                var recebe = AvgQuantityAccumulated("order_book_ethusd", Operacao);
-                if (recebe !=null)
-                    lstMediaAcumulada.AddRange(recebe);
-                
-                foreach (var item in lstResponse)
-                {
-                    if (lstMediaAcumulada != null)
+                    //média preço
+                    var lstMediaPrice = AvgPrice(lstData, Operacao);
+                    foreach (var item in lstResponse)
                     {
-                        foreach (var item2 in lstMediaAcumulada)
+                        foreach (var item2 in lstMediaPrice)
                         {
                             if (item.Channel == item2.Channel)
-                                item.AverageQuantityAccumulate = item2.AverageQuantityAccumulate;
+                                item.AveragePreci = item2.AveragePreci;
                         }
                     }
+
+                    ////média preço nos ultimos 5 segundos
+                    var lstMediaUlt5Segundos = await AvgPriceLastFiveSeconds(Operacao);
+                    if (lstMediaUlt5Segundos != null)
+                    {
+                        foreach (var item in lstResponse)
+                        {
+                            foreach (var item2 in lstMediaUlt5Segundos)
+                            {
+                                if (item.Channel == item2.Channel)
+                                    item.AveragePreciFiveSeconds = item2.AveragePreciFiveSeconds;
+                            }
+                        }
+                    }
+
+                    //o Média de quantidade acumulada de cada ativo 
+                    var lstMediaAcumulada = await AvgQuantityAccumulated("order_book_btcusd", Operacao);
+                    var recebe = await AvgQuantityAccumulated("order_book_ethusd", Operacao);
+                    if (recebe != null)
+                        lstMediaAcumulada.AddRange(recebe);
+
+                    foreach (var item in lstResponse)
+                    {
+                        if (lstMediaAcumulada != null)
+                        {
+                            foreach (var item2 in lstMediaAcumulada)
+                            {
+                                if (item.Channel == item2.Channel)
+                                    item.AverageQuantityAccumulate = item2.AverageQuantityAccumulate;
+                            }
+                        }
+                    }
+
+                    foreach (var item in lstResponse)
+                        item.Operation = (Operacao.Compra == Operacao ? "Compra" : "Venda");
+
+                    return lstResponse;
                 }
-
-                foreach (var item in lstResponse)
-                    item.Operation = (Operacao.Compra == Operacao ? "Compra" : "Venda");
-
-                return lstResponse;
-
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception)
             {
                 return null;
             }
-
         }
 
         //Busca base no momento, pego o último inserido
-        public List<ReturnOrderBookViewModel> DataBase()
+        public async Task<List<ReturnOrderBookViewModel>> DataBase()
         {
             try
             {
-                var collection = _mongoDbService.ConnectMongoDbOrders();
+                var collection = await _mongoDbService.ConnectMongoDbOrdersAsync();
                 return collection.Find(x => true && (x.channel.Equals("order_book_btcusd") || x.channel.Equals("order_book_ethusd"))).SortByDescending(d => d._id).Limit(2).ToList();
             }
             catch (Exception)
@@ -329,59 +351,64 @@ namespace TesteDigitas.Application.Services.BitStamp
             }
         }
 
-        public List<FindOrderBookViewModel> AvgPriceLastFiveSeconds(Operacao Operacao)
+        public async Task<List<FindOrderBookViewModel>> AvgPriceLastFiveSeconds(Operacao Operacao)
         {
             try
             {
-                var collection = _mongoDbService.ConnectMongoDbOrders();
-
-                var data = collection.Find(x => true && (x.channel.Equals("order_book_btcusd")
-                                        || x.channel.Equals("order_book_ethusd"))
-                                        ).SortByDescending(d => d._id).Limit(100).ToList();
-
-                data = data.Where(c => (
-                                          (TimeZoneInfo.ConvertTimeToUtc(DateTime.Now) - new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds
-                                        - Convert.ToDouble(c.data.timestamp)
-                                        ) <= 5).ToList();
-
-                var lista = new List<FindOrderBookViewModel>();
-
-                //int qtd=0;
-                double Total=0;
-                int n = 0;
-                string Channel = "";
-                foreach (var item in data.Select(c => new { c.channel }).Distinct())
+                var collection =await _mongoDbService.ConnectMongoDbOrdersAsync();
+                if (collection != null)
                 {
-                    //order_book_btcusd || order_book_ethusd
-                    for (var i = 0; i < data.Where(c => c.channel == item.channel).Count(); i++)
+                    var data = collection.Find(x => true && (x.channel.Equals("order_book_btcusd")
+                                            || x.channel.Equals("order_book_ethusd"))
+                                            ).SortByDescending(d => d._id).Limit(100).ToList();
+
+                    data = data.Where(c => (
+                                              (TimeZoneInfo.ConvertTimeToUtc(DateTime.Now) - new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds
+                                            - Convert.ToDouble(c.data.timestamp)
+                                            ) <= 5).ToList();
+
+                    var lista = new List<FindOrderBookViewModel>();
+
+                    //int qtd=0;
+                    double Total = 0;
+                    int n = 0;
+                    string Channel = "";
+                    foreach (var item in data.Select(c => new { c.channel }).Distinct())
                     {
-                        Channel = item.channel;
+                        //order_book_btcusd || order_book_ethusd
+                        for (var i = 0; i < data.Where(c => c.channel == item.channel).Count(); i++)
+                        {
+                            Channel = item.channel;
+                            if (Operacao.Venda == Operacao)
+                            {
+                                n = data[i].data.bids.Count;
+                                for (var j = 0; j < n; j++)
+                                    Total += double.Parse(data[i].data.bids[j][1].Replace(".", ","));
+                            }
+                            else
+                            {
+                                n = data[i].data.asks.Count;
+                                for (var j = 0; j < n; j++)
+                                    Total += double.Parse(data[i].data.asks[j][1].Replace(".", ","));
+                            }
+                        }
 
-                        if (Operacao.Venda == Operacao)
+                        lista.Add(new FindOrderBookViewModel
                         {
-                            n = data[i].data.bids.Count;
-                            for (var j = 0; j < n; j++)
-                                Total += double.Parse(data[i].data.bids[j][1].Replace(".", ","));
-                        }
-                        else
-                        {
-                            n = data[i].data.asks.Count;
-                            for (var j = 0; j < n; j++)
-                                Total += double.Parse(data[i].data.asks[j][1].Replace(".", ","));
-                        }
+                            Channel = Channel,
+                            AveragePreciFiveSeconds = Total / n
+                        });
+
+                        Channel = "";
+                        Total = 0;
+                        n = 0;
                     }
-                   
-                    lista.Add(new FindOrderBookViewModel{
-                                    Channel = Channel,
-                                    AveragePreciFiveSeconds = Total / n
-                              });
-
-                    Channel = "";
-                    Total = 0;
-                    n = 0;
+                    return lista;
                 }
-
-                return lista;
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception)
             {
@@ -389,11 +416,11 @@ namespace TesteDigitas.Application.Services.BitStamp
             }
         }
 
-        public List<FindOrderBookViewModel> AvgQuantityAccumulated(string Channel, Operacao Operacao)
+        public async Task<List<FindOrderBookViewModel>> AvgQuantityAccumulated(string Channel, Operacao Operacao)
         {
             try
             {
-                var collection = _mongoDbService.ConnectMongoDbOrders();
+                var collection = await _mongoDbService.ConnectMongoDbOrdersAsync();
                 var dados = collection.Find(x => true && (x.channel.Equals(Channel))).ToList();
         
                 var lista = new List<FindOrderBookViewModel>();
@@ -417,7 +444,6 @@ namespace TesteDigitas.Application.Services.BitStamp
 
                 lista.Add(new FindOrderBookViewModel{ Channel = Channel, 
                                                       AverageQuantityAccumulate = Total / n});
-
                 return lista;
             }
             catch (Exception)
@@ -425,9 +451,7 @@ namespace TesteDigitas.Application.Services.BitStamp
                 return null;
             }
         }
-
         #endregion
-
 
     }
 }

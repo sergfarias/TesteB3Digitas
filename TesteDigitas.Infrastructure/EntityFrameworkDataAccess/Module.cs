@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
-
 namespace TesteDigitas.Infrastructure.EntityFrameworkDataAccess
 {
     public class Module : Autofac.Module

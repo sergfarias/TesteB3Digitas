@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using TesteDigitas.Application.Services.Price;
 using TesteDigitas.Application.Services.MongoDb;
 using TesteDigitas.Application.Services.BitStamp;
-
 namespace TesteDigitas.Api
 {
     public class Startup

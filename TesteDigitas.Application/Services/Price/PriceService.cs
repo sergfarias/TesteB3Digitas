@@ -26,7 +26,7 @@ namespace TesteDigitas.Application.Services.Price
                 double ValorTotal = 0;
                 var ColecaoUsada = new List<string>();
               
-                var Ordenado = OrderVetor(Operacao, data);
+                var Ordenado = OrderVetor(Operacao, data.Result);
                 int conta = 0;
                 foreach (var item in Ordenado)
                 {
@@ -70,11 +70,11 @@ namespace TesteDigitas.Application.Services.Price
         }
 
         //Busca base no momento, pego o último inserido
-        public List<ReturnOrderBookViewModel> DataBase(string instrumento)
+        public async Task<List<ReturnOrderBookViewModel>> DataBase(string instrumento)
         {
             try
             {
-                var collection = _mongoDbService.ConnectMongoDbOrders();
+                var collection = await _mongoDbService.ConnectMongoDbOrdersAsync();
                 return collection.Find(x => true && x.channel.Equals(instrumento)).SortByDescending(d => d._id).Limit(1).ToList();
             }
             catch (Exception)

@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TesteDigitas.Api\TesteDigitas.Api.csproj" />
     <ProjectReference Include="..\TesteDigitas.Application\TesteDigitas.Application.csproj" />
+    <ProjectReference Include="..\XUnit.Coverlet.Collector\XUnit.Coverlet.Collector.csproj" />
   </ItemGroup>
 
   <ItemGroup>
